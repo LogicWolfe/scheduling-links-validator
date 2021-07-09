@@ -9,9 +9,40 @@ require_relative "validator_lib"
 class ValidatorCLI < Thor
   include ValidatorLib
 
+  default_task :production
+
+  MANIFEST_URLS= [
+    "https://cw2-alaska-staging.herokuapp.com/api/smart-scheduling-links/$bulk-publish",
+    "https://myhealth.alaska.gov/clinics/api/smart-scheduling-links/$bulk-publish",
+    "https://acappt.co.anoka.mn.us/api/smart-scheduling-links/$bulk-publish",
+    "https://www.caprepmod.org/api/smart-scheduling-links/$bulk-publish",
+    "https://www.comassvax.org/api/smart-scheduling-links/$bulk-publish",
+    "https://production.aevp-vaccinate.com/api/smart-scheduling-links/$bulk-publish",
+    "https://phappt.co.dakota.mn.us/api/smart-scheduling-links/$bulk-publish",
+    "http://www.stayhealthyfresno.com/api/smart-scheduling-links/$bulk-publish",
+    "https://hampton-va.cdn.prod.prepmodapp.com/clinics/api/smart-scheduling-links/$bulk-publish",
+    "https://www.idahoprepmod.com/api/smart-scheduling-links/$bulk-publish",
+    "https://www.marylandvax.org/api/smart-scheduling-links/$bulk-publish",
+    "https://clinics.maimmunizations.org/api/smart-scheduling-links/$bulk-publish",
+    "http://schedulemycovidvaccine.mlhealth.org/api/smart-scheduling-links/$bulk-publish",
+    "https://prepmod.health.state.mn.us/api/smart-scheduling-links/$bulk-publish",
+    "https://www.ndvax.org/api/smart-scheduling-links/$bulk-publish",
+    "https://vaccinations.health.pa.gov/api/smart-scheduling-links/$bulk-publish",
+    "https://philadelphia.cdn.prod.prepmodapp.com/api/smart-scheduling-links/$bulk-publish",
+    "https://cw2-pfc-pa-production.herokuapp.com/api/smart-scheduling-links/$bulk-publish",
+    "https://www.immunizepolk.com/api/smart-scheduling-links/$bulk-publish",
+    "https://pvam.cdn.prod.prepmodapp.com/clinics/api/smart-scheduling-links/$bulk-publish",
+    "https://www.vaccinateri.org/api/smart-scheduling-links/$bulk-publish",
+    "https://immunize.scottcountyiowa.gov/api/smart-scheduling-links/$bulk-publish",
+    "https://www.vavax.org/api/smart-scheduling-links/$bulk-publish",
+    "https://vaccineappointments.virginia.gov/api/smart-scheduling-links/$bulk-publish",
+    "https://prepmod.doh.wa.gov/api/smart-scheduling-links/$bulk-publish",
+    "https://www.wyoapptportal.org/api/smart-scheduling-links/$bulk-publish",
+  ]
+
   def self.exit_on_failure?
-	  true
-	end
+    true
+  end
 
   class_option :host,
     :desc => %Q(
@@ -23,6 +54,21 @@ class ValidatorCLI < Thor
       pass --host="localhost:3000" to make the validator follow links on the local machine.
     ), :default => nil, :type => :string
 
+  desc "production", "Validates all Prepmod production domains."
+  long_desc <<-DESC
+    Validates all Prepmod production domains.
+  DESC
+  def production
+    MANIFEST_URLS.each do |url|
+      begin
+        all(url)
+      rescue => e
+        say "Validation failed: #{e}", Shell::Color::RED
+      end
+    end
+  end
+
+
   desc "all MANIFEST_FILE_OR_URL", "Validates scheduling links MANIFEST_FILE_OR_URL."
   long_desc <<-DESC
     Validates the specified manifest file and all named resources.
@@ -30,7 +76,7 @@ class ValidatorCLI < Thor
     You may pass in a path or a URL to validate.
   DESC
   def all(file_or_url)
-    puts "Validating #{file_or_url} and all referenced resources"
+    say "Validating #{file_or_url} and all referenced resources", Shell::Color::BLUE
     state = State.new
     errors = validate_manifest_helper(state, file_or_url)
 
@@ -109,7 +155,7 @@ class ValidatorCLI < Thor
   def print_errors(errors)
     unless errors.empty?
       say "Validation failed", Shell::Color::RED
-      raise Thor::Error, "#{errors.join("\n")}"
+      puts "#{errors.join("\n")}"
     else
       say "Validation succeeded!", Shell::Color::GREEN
     end

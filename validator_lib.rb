@@ -11,7 +11,7 @@ US_STATES = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "
 module ValidatorLib
 
   # Context is a class containing information about the location of the JSON field being validated.
-  # It is printed as part of validation error messages in order to help 
+  # It is printed as part of validation error messages in order to help
   # users understand where the error occurred.
   # The context string uses the same query language as the `jq` tool.
   class Context
@@ -529,14 +529,14 @@ module ValidatorLib
       errors << %Q(#{context}: Schedule file must have serviceType with JSON object '{ "system": "http://terminology.hl7.org/CodeSystem/service-type", "code": "57", "display": "Immunization" }')
     end
 
-    # Should this be considered a validation error?
-    unless json_obj.find do |obj|
-        (obj["system"] == "http://fhir-registry.smarthealthit.org/CodeSystem/service-type") and
-          (obj["code"] == "covid19-immunization") and
-          (obj["display"] == "COVID-19 Immunization Appointment")
-      end
-      errors << %Q(#{context}: Schedule file must have serviceType with JSON object '{ "system": "http://fhir-registry.smarthealthit.org/CodeSystem/service-type", "code": "covid19-immunization", "display": "COVID-19 Immunization Appointment" }')
-    end
+    # # Should this be considered a validation error?
+    # unless json_obj.find do |obj|
+    #     (obj["system"] == "http://fhir-registry.smarthealthit.org/CodeSystem/service-type") and
+    #       (obj["code"] == "covid19-immunization") and
+    #       (obj["display"] == "COVID-19 Immunization Appointment")
+    #   end
+    #   errors << %Q(#{context}: Schedule file must have serviceType with JSON object '{ "system": "http://fhir-registry.smarthealthit.org/CodeSystem/service-type", "code": "covid19-immunization", "display": "COVID-19 Immunization Appointment" }')
+    # end
 
     errors
   end
@@ -755,7 +755,7 @@ module ValidatorLib
             k[:type].to_s
           end
         )
-        "#{context.with_field(k[:name])}: field is not of type #{type_name}" 
+        "#{context.with_field(k[:name])}: field is not of type #{type_name}"
       end
   end
 
@@ -775,7 +775,7 @@ module ValidatorLib
       flat_map { |k| k[:validator].call(context.with_field(k[:name]), state, json_obj[k[:name]]) }
   end
 
-  # Validates that c is an array of JSON objects. Each object is then 
+  # Validates that c is an array of JSON objects. Each object is then
   # passed to validate_json_object. See validate_json_object for arugment descriptions.
   # object_validator is applied to each object in the array.
   #
@@ -858,7 +858,7 @@ module ValidatorLib
 
   def id_validator(context, state, id_type, c)
     errors = []
-    if c.match?(/[^[:alnum:]_.]/) 
+    if c.match?(/[^[:alnum:]_.]/)
       errors << "#{context}: id contains forbidden characters (only alphanumeric and '_' , '.' allowed)"
     end
 
