@@ -12,8 +12,8 @@ class ValidatorCLI < Thor
   default_task :production
 
   MANIFEST_URLS= [
-    "https://cw2-alaska-staging.herokuapp.com/api/smart-scheduling-links/$bulk-publish",
-    "https://myhealth.alaska.gov/clinics/api/smart-scheduling-links/$bulk-publish",
+    "https://ak.cdn.staging.prepmodapp.com/api/smart-scheduling-links/$bulk-publish",
+    "https://myhealth.alaska.gov/api/smart-scheduling-links/$bulk-publish",
     "https://acappt.co.anoka.mn.us/api/smart-scheduling-links/$bulk-publish",
     "https://www.caprepmod.org/api/smart-scheduling-links/$bulk-publish",
     "https://www.comassvax.org/api/smart-scheduling-links/$bulk-publish",
